@@ -1,9 +1,8 @@
-with import <nixpkgs> {
-    crossSystem = {
-        config = "i386-elf";
-    };
-};
+{ pkgs ? import <nixpkgs> {} }:
 
-mkShell {
-    buildInputs = [ ];
+pkgs.mkShell {
+  nativeBuildInputs =
+    with pkgs; [
+        pkgsCross.i686-embedded.buildPackages.gcc
+    ];
 }
