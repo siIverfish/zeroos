@@ -2,9 +2,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#if defined(__linux__)
-#error "__linux__"
-#endif
+// #if defined(__linux__)
+// #error "__linux__"
+// #endif
 
 // #if !defined(__i386__)
 // #error "!defined(__i386__)"
@@ -85,20 +85,34 @@ void terminal_putentryat(unsigned char c, uint8_t color, size_t x, size_t y)
 void terminal_putchar(char c)
 {
     terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+    go_to_next_column();
+}
+
+void go_to_next_column()
+{
     if (++terminal_column == VGA_WIDTH) {
-        terminal_column = 0;
-        if (++terminal_row == VGA_HEIGHT) {
-            // we're out of terminal
-            // TODO: make it scroll or something instead of being Stupid
-            terminal_row = 0;
-        }
+        go_to_next_row();
+    }
+}
+
+void go_to_next_row()
+{
+    terminal_column = 0;
+    if (++terminal_row == VGA_HEIGHT) {
+        // we're out of terminal
+        // TODO: make it scroll or something instead of being Stupid
+        terminal_row = 0;
     }
 }
 
 void terminal_write(const char *data, size_t size)
 {
     for (size_t i = 0; i < size; i++) {
-        terminal_putchar(data[i]);
+        if (data[i] == '\n') {
+            go_to_next_row();
+        } else {
+            terminal_putchar(data[i]);
+        }
     }
 }
 
@@ -110,6 +124,7 @@ void terminal_writestring(const char *data)
 void kernel_main(void)
 {
     terminal_initialize();
+    terminal_writestring("Hello, World!\nNext line\nInitializing with a very long sequence of characters that will go over the limit and onto the next line...");
 
-    terminal_writestring("Hello, World!\n");
+
 }

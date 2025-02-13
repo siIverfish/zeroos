@@ -9,8 +9,8 @@ else
 fi
 
 mkdir -p isodir/boot/grub
-cp zeroos.bin isodir/boot/myos.bin
+cp zeroos.bin isodir/boot/zeroos.bin
 cp grub.cfg isodir/boot/grub/grub.cfg
-grub-mkrescue -o myos.iso isodir
+grub-mkrescue -o zeroos.iso isodir
 
 qemu-system-i386 -cdrom zeroos.iso
